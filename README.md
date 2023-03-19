@@ -34,6 +34,9 @@
 - 전체 css 보조
 </br>
 
+## **발표 자료**
+[3조_발표ppt.pdf](https://github.com/Lee-Areum/DutyFreeShop/files/11010756/3._.ppt.pdf)
+</br>
 
 ## **성과**
 
