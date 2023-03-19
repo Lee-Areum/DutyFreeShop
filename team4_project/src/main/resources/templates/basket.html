@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<meta charset="utf-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script th:src="@{/js/basket.js}"></script>
+<script>
+  $(document).ready(function(){
+	
+	  $(".add").on("click",function(){
+		  event.preventDefault();
+		  
+		  var basket_id_val=$(this).attr("data-basket_id");
+		  var amount_val =$("[amount-basket_id_span="+basket_id_val+"]").text();
+		  
+		  var exchange_rate=$("[total-basket_id="+basket_id_val+"]").attr("total-exchange_rate");
+		  var original_price=$("[total-basket_id="+basket_id_val+"]").attr("total-original_price");
+		  var sale_rate = $("[sale-basket_id="+basket_id_val+"]").attr("sale_rate");
+		  
+		  $.ajax({
+			  url:"add",
+			  method:"get",
+			  data:{
+				  basket_id:basket_id_val,
+				  amount:amount_val
+			  	},
+			  dataType:"text",
+			  success:function(data,status,xhr){				  
+			  	$("[amount-basket_id_span="+basket_id_val+"]").text(data);
+			  	var USD_val = Math.floor(original_price*data*100)/100;	
+			  	var WON_val=Math.round(original_price*exchange_rate)*data;
+			  	$("[totalUSD-basket_id="+basket_id_val+"]").text(USD_val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  	$("[totalWON-basket_id="+basket_id_val+"]").text(WON_val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  	
+			  	var sale_USD = Math.floor(USD_val*sale_rate*100)/100;
+			  	var sale_WON = Math.round(original_price*exchange_rate*sale_rate)*data;
+			  	$("[totalUSD_sale-basket_id="+basket_id_val+"]").text(sale_USD.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  	$("[totalWON_sale-basket_id="+basket_id_val+"]").text(sale_WON.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  	
+			  	var amount_list=[];
+			  	var ori_price_list=[];
+			  	var sale_rate_list=[];
+			  	$(".amount_span").each(function(index,obj){
+			  		amount_list[index]=$(obj).text()*1
+			  	})
+			  	$(".original_price_span").each(function(index,obj){
+			  		ori_price_list[index]=$(obj).text()*1
+			  	});
+			  	$("[sale_rate]").each(function(index,obj){
+		  			sale_rate_list[index]=$(obj).attr("sale_rate");
+		  		})
+			  	var finalUSD=0;
+			  	var finalWON=0;
+
+			  	for( var i=0;i<amount_list.length;i++){
+			  		
+			  		finalUSD+=sale_rate_list[i]*ori_price_list[i]*amount_list[i];
+			  		finalWON+=Math.round(ori_price_list[i]*exchange_rate*sale_rate_list[i])*amount_list[i];
+			  	}
+			  	console.log(Math.round(ori_price_list[0]*exchange_rate*1)*amount_list[0])
+			  	finalUSD=Math.round(finalUSD*100)/100;
+			  	finalWON=Math.round(finalWON);
+			  	$(".finalUSD").text(finalUSD.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  	$(".finalWON").text(finalWON.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  	
+			  },
+			  error:function(xhr,status,error){
+				  console.log(error);
+			  }
+		  });
+	  });
+	$(".subtract").on("click",function(){
+		event.preventDefault();
+		
+		var basket_id_val=$(this).attr("data-basket_id");
+		var amount_val =$("[amount-basket_id_span="+basket_id_val+"]").text();
+		
+		var exchange_rate=$("[total-basket_id="+basket_id_val+"]").attr("total-exchange_rate");
+		var original_price=$("[total-basket_id="+basket_id_val+"]").attr("total-original_price");
+		var sale_rate = $("[sale-basket_id="+basket_id_val+"]").attr("sale_rate");
+		
+		  $.ajax({
+			  url:"subtract",
+			  method:"get",
+			  data:{
+				  basket_id:basket_id_val,
+				  amount:amount_val
+			  },
+			  dataType:"text",
+			  success:function(data,status,xhr){
+				  if (data==0){
+					  $("[amount-basket_id_span="+basket_id_val+"]").parent().parent().remove();
+					  return ""
+				  }
+				  $("[amount-basket_id_span="+basket_id_val+"]").text(data);
+				  	var USD_val = Math.floor(original_price*data*100)/100;
+				  	var WON_val=Math.round(original_price*exchange_rate*data);
+				  	$("[totalUSD-basket_id="+basket_id_val+"]").text(USD_val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+				  	$("[totalWON-basket_id="+basket_id_val+"]").text(WON_val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+				  	
+				  	var sale_USD = Math.floor(USD_val*sale_rate*100)/100;
+				  	var sale_WON = Math.round(original_price*exchange_rate*sale_rate)*data;
+				  	$("[totalUSD_sale-basket_id="+basket_id_val+"]").text(sale_USD.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+				  	$("[totalWON_sale-basket_id="+basket_id_val+"]").text(sale_WON.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+				  	
+				  	
+				    var amount_list=[];
+				  	var ori_price_list=[];
+				  	var sale_rate_list=[];
+				  	$(".amount_span").each(function(index,obj){
+				  		amount_list[index]=$(obj).text()*1
+				  	})
+				  	$(".original_price_span").each(function(index,obj){
+				  		ori_price_list[index]=$(obj).text()*1
+				  	})
+				  	$("[sale_rate]").each(function(index,obj){
+			  			sale_rate_list[index]=$(obj).attr("sale_rate");
+			  		})
+				  	var finalUSD=0;
+				  	var finalWON=0;
+				  	
+				  	for( var i=0;i<amount_list.length;i++){
+				  		finalUSD+=sale_rate_list[i]*ori_price_list[i]*amount_list[i];
+				  		finalWON+=Math.round(ori_price_list[i]*exchange_rate*sale_rate_list[i])*amount_list[i];
+				  	}
+				  	finalUSD=Math.round(finalUSD*100)/100;
+				  	finalWON=Math.round(finalWON);
+				  	$(".finalUSD").text(finalUSD.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+				  	$(".finalWON").text(finalWON.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+			  },
+			  error:function(xhr,status,error){
+				  console.log(error);
+			  }
+		  });
+	  });
+  });
+
+</script>
+</head>
+<div layout:fragment="content">
+
+    	<br>
+    <div id ="mid-centor">
+    	<h4 style="width:50%;margin-left:17%;">장바구니</h4>
+    	<hr style="width:70%; margin:auto;margin-top:20px">
+    	
+        <form th:action="@{/basket/multiDelete}" >
+        <br>
+        <table class="table" style="width:70%;margin:auto;">
+ 		<colgroup>
+	    	<col width="20%" />
+	    	<col width="20%" />
+	    	<col width="13%" />
+	    	<col width="13%" />
+	    	<col width="13%" />
+	    	<col width="13%" />
+	    	<col width="10%" />
+	    </colgroup>
+		  <thead>
+		    <tr style="text-align:center;
+			background-color: #E2E3E5;">
+		      <th scope="col">상품이미지</th>
+		      <th scope="col">상품명</th>
+		      <th scope="col">수량</th>
+		      <th scope="col">상품 가격<br>(달러/원화)</th>
+		      <th scope="col">합계<br>(달러/원화)</th>
+		      <th scope="col">할인가<br>(달러/원화)</th>
+		      <th></th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  
+		  	<tr th:each="row:${basketDTOs}" style="text-align:center;">	
+		    	
+		      	<td row_num="${row.basketId}"><img th:src="${row.imageUrl}" style="width:50%;"></td>
+		     	<td row_num="${row.basketId}">[[${row.nameKor}]]</td>
+		     	<td  row_num="${row.basketId}" style="width:15%;">
+		     		<button class="subtract btn btn-secondary btn-sm" th:data-amount="${row.amount}" th:data-basket_id="${row.basketId}">-</button>
+		     		 <span class="amount_span" th:amount-basket_id_span="${row.basketId}"> [[${row.amount}]] </span>
+		     		<button class="add btn btn-secondary btn-sm" th:data-amount="${row.amount}" th:data-basket_id="${row.basketId}">+</button>
+		     	</td>
+		     	<td  row_num="${row.basketId}" style="width:10%;" >
+		     		<span class="original_price_span">[[${#numbers.formatDecimal(row.originalPrice, 1, 'COMMA',2,'POINT')}]]</span>$
+		     		<br>
+		     		[[${#numbers.formatInteger(row.originalPrice*row.exchangeRate, 1, 'COMMA')}]] 원
+		     	</td>
+		     	<td  row_num="${row.basketId}" style="width:10%;" th:total-basket_id="${row.basketId}" th:total-exchange_rate="${row.exchangeRate}" th:total-original_price="${row.originalPrice}">
+		     		<span th:totalUSD-basket_id="${row.basketId}">[[${#numbers.formatDecimal(row.originalPrice*row.amount,1, 'COMMA',2,'POINT')}]]</span>$
+		     		<br>
+		     		<span th:totalWON-basket_id="${row.basketId}">[[${#numbers.formatInteger(row.originalPrice*row.exchangeRate*row.amount, 1, 'COMMA')}]]</span> 원
+		     	</td>
+		     	<td style="width:10%;" th:sale_rate="${row.saleRate}"th:sale-basket_id="${row.basketId}">
+		     		<span th:totalUSD_sale-basket_id="${row.basketId}">[[${#numbers.formatDecimal(row.originalPrice*row.amount*row.saleRate,1, 'COMMA',2,'POINT')}]]</span>$
+		     		<br>
+		     		<span th:totalWON_sale-basket_id="${row.basketId}">[[${#numbers.formatInteger(row.originalPrice*row.exchangeRate*row.amount*row.saleRate, 1, 'COMMA')}]]</span> 원
+		     	</td>
+		     	
+
+		     	<th:block th:with="exchangeRate=${row.exchangeRate},saleRate=${row.saleRate}">
+		    	<td><button type="button" class="btn btn-secondary btn-sm"  th:onclick="del([[${row.basketId}]])">삭제</button></td>
+		    </tr>
+		    <tr style="background : #f7f7f7">
+				<td colspan="7">
+			    	<h5 style="margin-left: 3%;">총 주문 금액:
+			    		<span style="display:inline;float:right;"> 
+			    			<span class="finalUSD" >
+			    				[[${#numbers.formatDecimal(#aggregates.sum(basketDTOs.![originalPrice*amount*saleRate]), 1,'COMMA',2,'POINT')}]]
+			    			</span> 
+			    			$ /
+			    			<span class="finalWON" > 
+			    				[[${#numbers.formatInteger(#aggregates.sum(basketDTOs.![originalPrice*amount*exchangeRate]), 1,'COMMA')}]]
+			    			</span>원
+			    		</span>
+			    	</h5>
+			    </td>
+		    </tr>
+		    	
+		    
+		    
+		  </tbody>
+		</table>
+		</form>
+		<button class="btn btn-secondary" style="margin-left:78%; margin-top:1%;padding:1%; margin-bottom:5%;" onclick="location.href='/app/order/orderForm' ">결제하기</button>
+		
+    </div>
+</div>
+</html>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asianaidt.dutyfreeshop.mapper.BestProductMapper">
+	
+	<select id="getBestProductList" resultType="BestProductDTO">
+		select a.product_id, a.category_id, a.brand_id, a.name_kor, a.name_eng,
+				a.image_url, a.original_price, a.sale_rate, b.category_id_kor, 
+				b.category_id_eng, c.brand_name_kor, c.brand_name_eng
+		from product a 
+		join category b
+		on a.category_id = b.category_id
+		join brand c 
+		on a.brand_id = c.brand_id
+		limit 6
+	</select>
+	
+
+</mapper>

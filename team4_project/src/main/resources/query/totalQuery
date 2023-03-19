@@ -1,0 +1,457 @@
+drop table if exists airline;
+drop table if exists best_product;
+drop table if exists basket;
+drop table if exists brand;
+drop table if exists category;
+drop table if exists exchangerate;
+drop table if exists member;
+drop table if exists orderrecord;
+drop table if exists payment;
+drop table if exists product;
+drop table if exists region;
+drop table if exists review;
+
+CREATE TABLE Basket
+ (basket_id SERIAL PRIMARY KEY,
+	member_id INT NOT NULL,
+	product_id INT NOT NULL,
+	amount INT NOT NULL);
+	
+	
+create table brand
+(
+	brand_id serial primary key,
+	brand_name_kor varchar(50) not null,
+	brand_name_eng varchar(50) not null
+);
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ('조니워커', 'Johnnie Walker');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ('발렌타인', 'Ballantines');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ('로얄살루트 32년', 'Royal Salute');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ('글렌모렌지', 'Glenmorangie');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ('수정방', 'Shui Jing Fang');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ('헤네시', 'Hennessy');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '화요', 'Hwayo');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '유니베라', 'Univera');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '정관장', 'Cheong Kwan Jang');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '오리진', 'Origin');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '팬 파마텍', 'Pan Pharmatech');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '관절팔팔', 'Gwan Jeol Pal Pal');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '마더네스트', 'Mothernestl');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '시니케어', 'Sinicarel');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '프리미엄 프로폴리스', 'Premium Propolis');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '길리안 초콜릿', 'Guylian');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '존 바바토스 아티산', 'John Varvatos');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '보이스캐디', 'Voice Caddie');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '더마원드', 'Dermawand');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '스와로브스키', 'Swarovski');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '콜란토테 카보레이', 'Colantotte Carboly');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '토스카나', 'Toscana');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '링스오브런던', 'Links of London');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '아이그너 올비아', 'Aigner Olbia');
+
+INSERT INTO brand(
+	brand_name_kor, brand_name_eng)
+	VALUES ( '몽블랑', 'Montblanc');
+
+create table category
+(
+	category_id serial primary key,
+	category_id_kor varchar(50) not null,
+	category_id_eng varchar(50) not null
+);
+
+INSERT INTO category(category_id_kor, category_id_eng)
+	VALUES ('주류', 'liquor');
+
+INSERT INTO category(category_id_kor, category_id_eng)
+	VALUES ('화장품', 'cosmetics');
+
+INSERT INTO category(category_id_kor, category_id_eng)
+	VALUES ('건강식품', 'health');
+
+INSERT INTO category(category_id_kor, category_id_eng)
+	VALUES ('향수', 'perfume');
+
+INSERT INTO category(category_id_kor, category_id_eng)
+	VALUES ('기타', 'etc');
+
+create table exchangeRate(
+	exchange_rate_id serial primary key, 
+	exchange_unit varchar(10) not null, 
+	exchange_rate numeric not null
+);
+
+INSERT INTO exchangerate(
+	exchange_rate_id, exchange_unit, exchange_rate)
+	VALUES (1, 'USD', 1);
+
+INSERT INTO exchangerate(
+	exchange_rate_id, exchange_unit, exchange_rate)
+	VALUES (2, 'EUR', 0.93);
+
+INSERT INTO exchangerate(
+	exchange_rate_id, exchange_unit, exchange_rate)
+	VALUES (3, 'CNY', 6.86);
+
+INSERT INTO exchangerate(
+	exchange_rate_id, exchange_unit, exchange_rate)
+	VALUES (4, 'JPY', 134.05);
+
+INSERT INTO exchangerate(
+	exchange_rate_id, exchange_unit, exchange_rate)
+	VALUES (5, 'WON', 1295.80);
+
+CREATE TABLE Member (
+	member_id SERIAL PRIMARY KEY,
+	id	VARCHAR(50)	NOT NULL,
+	password	VARCHAR(200)	NOT NULL,
+	name	VARCHAR(50)	NULL,
+	english_first	VARCHAR(50)	NOT NULL,
+	english_last	VARCHAR(50)	NOT NULL,
+	email	VARCHAR(50)	NOT NULL,
+	phone_number	VARCHAR(50)	NOT NULL,
+	birth_date	DATE	NOT NULL,
+	role	VARCHAR(10)	NOT NULL	DEFAULT USER,
+	create_date	TIMESTAMP	NOT NULL,
+	update_date	TIMESTAMP	NULL,
+	delete_date	TIMESTAMP	NULL
+);
+	
+create table orderRecord
+(
+	order_id serial primary key,
+	member_id integer not null,
+	payment_id integer not null,
+	product_id integer not null,
+	amount int not null,	
+	price_usd numeric not null,
+	price_krw numeric not null,
+	payment_date timestamp not null
+);
+
+CREATE TABLE payment (
+	payment_id	serial primary key NOT NULL,
+	member_id	INTEGER	NOT NULL,
+	order_first_name	VARCHAR(15)	NOT NULL,
+	order_last_name	VARCHAR(15)	NOT NULL,
+	order_name	VARCHAR(30)	NOT NULL,
+	phone_number	VARCHAR(15)	NOT NULL,
+	passport_number	VARCHAR(30)	NOT NULL,
+	birth_date	DATE	NOT NULL,
+	email	VARCHAR(30)	NOT NULL,
+	nation	 VARCHAR(20)	NOT NULL,
+	payment_date	DATE	NOT NULL,
+	payment_method	VARCHAR(10)	NOT NULL,
+	unique_payment_number	VARCHAR(30)	NOT NULL,
+	status	VARCHAR(30)	NOT NULL,
+	price_usd	DECIMAL	NOT NULL,
+	price_krw	DECIMAL	NOT NULL
+); 
+
+create table product
+(
+	product_id serial primary key,
+	category_id integer not null,
+	brand_id integer not null,
+	name_kor varchar(50) not null,
+	name_eng varchar(50) not null,
+	image_url varchar(200) not null,
+	content_kor varchar(500) not null,
+	content_eng varchar(500) not null,
+	original_price integer not null,
+	sale_rate numeric not null,
+	total_cnt integer not null,
+	created_date timestamp not null,
+	updated_date timestamp,
+	deleted_date timestamp
+);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('가장 오래되고 희귀한 16가지 최상급 원액을 조니 워커 가문의 오랜 블렌딩 노하우로 탄생시킨 스카치위스키의 명작.
+모든 생산과정은 수작업으로 이루어지며, 19세기 모양 그대로인 병에는 각각의 고유번호가 새겨져 있음.','Created from the rarest and most expensive whiskies in the world,
+each bottle of Johnnie Walker Blue Label is individually numbered, reflecting its rarity.',1, '조니워커블루', 'Johnnie Walker', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_bv4bb5vz.jpg', 212, 0.8, 100, '2023-02-20 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('위스키 애호가들로부터 찬사를 받는 발렌타인 21년은 최고 위스키로서의 자격을 갖추고 있음.
+반짝이는 골드 컬러, 플로럴 향 그리고 아로마틱한 맛의 다양한 음미 요소들은 발렌타인 21년에 특별함을 더해 줌.','The connoisseur’s blend of whisky, Ballantine’s 21 Years Old has supreme credentials.
+Its sparkling gold colour, floral nose and aromatic pallet give Ballantine’s 21 Years Old a delightful complexity, making this a whisky to savour.',2, '발렌타인 21년', 'Ballantines 21 Year Old', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_pf1df7jo190926160228.jpg', 2, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('발렌타인 30년은 세계 최상의 절묘한 맛을 지닌 최고급 블렌디드 위스키임.
+깊은 골드 컬러와 섬세하면서도 달콤한 향, 꿀과 바닐라의 복합적인 맛은
+발렌타인 30년을 아주 특별한 위스키로 만들어 줌.','Ballantines 30 Years Old ranks a s one of the world"s most exquisite and expensive blends.
+With a deep quality gold colour, subtle sweet flavour on the nose and a complex pallet of honey and vanilla, Ballantine"s 30 Years Old is an exceptional whisky.',2, '발렌타인 30년', 'Ballantines 30 Year Old', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ab2ra0tr220222080606.jpg', 1, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('엘리자베스 2세 여왕의 대관식을 위해 만들어졌던, 최고의 경의를 상징하는 위스키. 최소 21년 이상 숙성한 위스키만을 선별하여 만든 특별한 스카치 위스키로, 로얄 살루트의 정교하고 세련된 블렌딩을 느낄 수 있음. ','The one that started it all, a whisky fit for a queen. Royal Salute was created to mark the coronation of HM Queen Elizabeth II. There’s history in each measure, a royal tradition that’s British to the core.
+',3, '로얄살루트 32년', 'Royal Salute 32 Year old The Precious Jewel', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ju3lj5yq220630113238.jpg', 2, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('발렌타인 17년산은 스코틀랜드의 모든 맛을 보여 줌.
+달콤한 오크향이 나는 감미로운 맛의 17년산은 세계 최고의 위스키임을 입증해 줌.','Ballantine’s 17 Years Old displays all the flavours of Scotland.
+Its refined sweet oak nose and luscious body make Ballantine’s 17 Years Old one of the world’s most highly acclaimed whiskies.',2, '발렌타인 17년', 'Ballantines 17 Year Old', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_hr9mb7ni190926160332.jpg', 1, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('글렌모렌지 시그넷은 모카의 풍미가 소용돌이치듯이 밀려드는 위스키로 자메이카 블루마운틴 커피 한 잔을 마시며 느꼈던 즐거움에서 영감을 얻어 탄생함. 버번 캐스크의 크림처럼 부드러운 질감, 셰리 캐스크의 달콤한 풍미, 그리고 그을린 캐스크로부터 발현된 알싸한 스파이스 향이 조화롭게 담긴 글렌모렌지의 가장 오래된 위스키 원액이 블렌딩됨.','Signet is a whisky of mocha flavours, inspired by Blue Mountain coffee. Balanced with some of our oldest whiskies aged in rare Bourbon, Sherry and spice virgin charred oak casks, giving it creaminess and sweetness among an explosion of flavours.',4, '글렌모렌지 시그넷', 'Glenmorangie - Signet', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_mj3xr6zf211130135010.jpg', 2, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('원나라 후기부터 명, 청대를 거쳐 600년을 이어온 수정방(Shui Jing Fang)은 수정처럼 맑고 은은한 고운 향이 오래도록 지속되는 것이 특징.
+알코올 함량의 52%의 고순도를 자랑하는 중국 전통방식의 백주를 통해 오천년 중국 문화를 맛볼 수 있음.','Originating from the end of the Yuan dynasty, continuing through the Ming and Qing dynasties,
+Shui Jing Fang encompasses 600 years of unique character. (Alcohol: 52%)',5, '수정방', 'Shui Jing Fang', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_cm1cd6id.jpg', 1, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('엘리자베스 2세 여왕의 대관식을 위해 만들어졌던, 최고의 경의를 상징하는 위스키. 최소 21년 이상 숙성한 위스키만을 선별하여 만든 특별한 스카치 위스키로, 로얄 살루트의 정교하고 세련된 블렌딩을 느낄 수 있음. ','The one that started it all, a whisky fit for a queen. Royal Salute was created to mark the coronation of HM Queen Elizabeth II. There’s history in each measure, a royal tradition that’s British to the core.',3, '로얄살루트21년', 'Royal Salute 21 Years old', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ej2al2qu221026164334.jpg', 1, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('1870년에 창립자 리차드 헤네시의 증손자, 모리스 헤네시가 가까운 친지들을 위해 특별히 만든 세계 최초의 X.O. 코냑. 세계 최대 규모의 셀러에서 숙성된 100여 가지 이상의 오드비 원액(Eau de Vie)들을 블렌딩하였고, 우아하고 복합적인 풍미로 최상급 코냑의 대명사로 일컬어지고 있음.','1870년에 창립자 리차드 헤네시의 증손자, 모리스 헤네시가 가까운 친지들을 위해 특별히 만든 세계 최초의 X.O. 코냑. 세계 최대 규모의 셀러에서 숙성된 100여 가지 이상의 오드비 원액(Eau de Vie)들을 블렌딩하였고, 우아하고 복합적인 풍미로 최상급 코냑의 대명사로 일컬어지고 있음.',6, '헤네시 엑스 오', 'Hennessy X.O', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_qo5ui2de.jpg', 1, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('프리미엄 증류식 소주‘화요 41˚는 지하 150m 천연 암반수와 100% 우리 쌀로 빚어내어 깊고 부드러운 풍미를 자랑. 옹기에 담아 지하에서 6개월 동안 숙성기간을 걸쳐 특유의 깊고 부드러운 맛을 담아낸 것으로 인공 첨가물을 전혀 넣지 않은 자연스러운 맛과 향이 특징. 화요 41˚는 고급 위스키처럼 얼음과 함께 마시면 더욱 부드럽게 즐길 수 있으며, 차게 얼려서 드시면 더욱 좋음','Premium distilled soju ‘Hwayo 41˚’ is brewed with natural bedrock water from 150m underground and 100% Korean rice, boasting a deep and soft flavor. It is characterized by a natural taste and aroma with no artificial additives, as it contains a unique deep and soft taste after being aged in an earthenware container for 6 months in the basement. Hwayo 41˚ can be enjoyed more smoothly if you drink it with ice like a fine whiskey, and it is better to drink it chilled.',7, '화요 41', 'Hwayo 41', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ph6at1si.jpg', 2, 0.8, 100, '2023-02-21 00:00:00', null, null, 1);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('남양알로에의 새로운 이름 [유니베라]가 1976년부터 알로에를 연구해 만든 고농축 알로에젤 에센스.
+직접 재배하고 연구한 6배 농축된 알로에 성분을 100% 함유하여, 집중 보습, 피부 저항력 강화, 진정, 피부 손상 개선, 트러블 개선, 쿨링 효과를 부여함.','This higly concentrated aloe essence gel is presented by experts who have worked with aloe vera since 1976.
+Grown and researched directly from Univeras very own farm and laboratory, Univera Skincare 100 delivers six-times concentrated pure aloe essence with intensive moisturizing, skin resilience, healing and cooling effects.',8,'유니베라 스킨케어 100', 'Univera skincare 100', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_iy8fk6vw.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,2);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('100년 전통의 노하우와 정성이 담긴 정관장 대표제품으로 6년근 홍삼 100%를 농축하여
+다양한 홍삼유효성분이 함유되어 홍삼 본연의 깊고 진한 풍미가 뛰어남.
+면역력 증진, 피로개선, 혈소판 응집억제를 통한 혈액흐름, 기억력 개선, 항산화에 도움을 줄 수 있는 건강기능식품.','As Cheong-Kwan-Jangs key product made with its centennial experience and effort,
+it contains various active ingredients of red ginseng made by extracting
+and concentrating 100% six-year-old ginseng, featuring the deep, rich flavors of red ginseng.',9,'정관장 홍삼정', 'Cheong-Kwan-Jang KOREAN RED GINSENG', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_xa7op9rp220428133740.JPG', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('항균, 항바이러스 작용을 하는 플라보노이드 성분이 함유된 Origin-A 프로폴리스 스프레이는
+입냄새 방지에 탁월한 구강청결제로 호흡기 감염 질환예방과 충치예방, 구내염, 입속 궤양방지 등에 도움을 줍니다.
+이는 입안의 박테리아의 번식을 억제하는 효과로 세균 감염방지의 효능이 있어 감기나
+상부 호흡기 감염(upper respiratory infection)을 일으키는 바이러스를 무력화시키는 작용 등에 효과적입니다.
+휴대가 간편한 고급 제품으로 선물로도 매우 적합한 상품입니다.','Propolis Spray with Flavonoid helps in fighting the virus which cause upper respiratory infection and reduce the severity and duration of colds
+by keeping down the numbers of bacteria in mouth. It is an ideal product for travel or as a present.',10,'오리진-A 프로폴리스 스프레이', 'Origin-A Propolis Spray', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ln7aq1fv.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('노화를 막는 항산화 성분과 염증을 막는 다량의 항염증 성분을 함유하고 있습니다.
+원활한 신진대사와 손상된 관절조직의 치유로 관절염환자의 통증감소 및 기관지천식,
+염증질환에도 탁월한 도움을 주는 최고의 건강기능식품입니다.','It contains a large amount of anti-inflammatory agents to prevent te inflammation and prevent the aging antioxidants.
+It helps metabolism, healing of the damaged tissue, reducing arthritis pain and assisting treatment of bronchial asthma, inflammatory diseases.',11,'팬 파마텍 초록입 홍합', 'Pan Pharmatech Green Lipped Mussel', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ao4sf5zr.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('한국 7개 대학병원 인체적용시험 결과, 섭취 2개월 후 90 % 이상 관절 기능 개선 확인. 한국 최초 식약처 개별인정 받은 관절 건강 기능성 원료 사용. 살아있는 초록입홍합 1,000kg에서 단 1.4 kg만 추출되는 귀한 오일을 이용하여 제조한 제품.','Improvements in joint functions after 2 months of intake confirmed in more than 90% of human test from 7 hospitals in Korea; manufactured using oil extracted only 1.4 kg from 1,000 kg of green-lipped mussel.',12,'관절팔팔', 'Gwan Jeol Pal Pal', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_vb3gt7eo211029091811.JPG', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('혈행개선 및 혈압과 콜레스테롤 수치개선에 도움을 줄 수 있는 EPA 400mg, 건강한 두뇌와 시각 기능에 도움을 줄 수 있는 DHA 200mg 함유.  100% 노르웨이산 고품질 rTG 오메가-3 원료를 사용하여 심장질환 예방과 면역기능 및 학습능력 향상에 도움을 주는 제품.','EPA(400mg) may assist in the maintenance of normal circulation, blood pressure and cholesterol levels. DHA(200mg) is required for maintenance of normal brain and eye function. Made from 100% Norwegian rTG Omega-3.',13,'마더네스트 rTG 슈퍼오메가3', 'Mothernest rTG Super Omega-3', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_jq5tr8la220429152857.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('시니케어 PF1000의 후코이단은 항암효과, 면역력 증가 등 다양한 질환에 도움을 줌. 밀크시슬의 다량 함유로 간 회복, 혈관 건강을 개선해 심혈관 질환을 예방함. 폴리코사놀은 몸에 해로운 LDL은 낮춰주고, 몸에 이로운 HDL은 높여주는 효능이 있음.','Sinicare PF1000 is formulated with fucoidan, which is active ingredient highly researched for its anticancer properties and is known to strengthen the immune system. Additionally, PF1000 has a high concentration of milk thistle, which may help improve liver recovery and cardiovascular health. Policosanol helps lower harmful LDL cholesterol while increasing beneficial HDL.',14,'시니케어 PF1000 30정', 'Sinicare PF1000 30s', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_pv8mc8pq220630151336.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('프리미엄 프로폴리스 5000은 높은 함유량의 프로폴리스를 가지고 있는 제품임.  프로폴리스는 인체의 활력을 찾고 건강을 유지할 수 있도록 도와줌. 프로폴리스의 자연적이고 강력한 항균작용은 감기 증상을 완화하는데 도움, 인체의 면역력 강화를 위해서도 섭취되는 제품임.','Premium Propolis 5000 is a product with a high content of propolis. Propolis helps to find the vitality of the human body and maintain health. The natural and strong antibacterial action of propolis helps relieve cold symptoms and is also ingested to strengthen the bodys immunity.',15,'프리미엄 프로폴리스 5000', 'Premium Propolis 5000', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_nz0eb5da220630153231.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('프리미엄 프로폴리스 5000은 높은 함유량의 프로폴리스를 가지고 있는 제품임.  프로폴리스는 인체의 활력을 찾고 건강을 유지할 수 있도록 도와줌. 프로폴리스의 자연적이고 강력한 항균작용은 감기 증상을 완화하는데 도움, 인체의 면역력 강화를 위해서도 섭취되는 제품임.','Premium Propolis 5000 is a product with a high content of propolis. Propolis helps to find the vitality of the human body and maintain health. The natural and strong antibacterial action of propolis helps relieve cold symptoms and is also ingested to strengthen the bodys immunity.',9,'정관장 홍삼정', 'Cheong-Kwan-Jang', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_ae3lq3my220429153345.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('현대인의 건강에 치명적인 콜레스테롤 질환과 심근경색, 동맥경화, 심혈관질환 등 혈관 질병 개선에 도움과 피로와 스트레스로 인한 손상된 간 기능 개선을 위해 
+밀크씨슬에 함유된 실리마린 성분은 활성 산소로부터 세포 조직을 보호함으로써 간 손상을 예방하고','This formula has been specifically formulated for those who leads busy modern lifestyle to aid and improve fatigue and stress.
+The Milk Thistle contains silymarin, active ingredient which may assist in the improvement of cardiovascular diseases, arterial hardening.',10,'오리진-A 브이엘씨큐', 'Origin-A VLC-Q', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_mj6tl8je220726140252.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null, 3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('길리안 초콜릿은 전 세계 최고의 초콜릿을 생산하는 벨기에에서 만들어진 초콜릿으로 
+부드러운 카라멜, 바삭한 비스킷 그리고 달콤한 과일 맛으로 채워진 제품임.
+360g 럭셔리 틴 제품은 32가지의 최고의 프랄린으로 당신의 오감을 만족 시킬 초콜릿.','Guylian presents a range of masterpieces with sensational fillings like smooth caramel, crunchy biscuit and pear-mango ganache. The 360g luxury tin box offers 32 of the finest pralines that will surprise your senses. (made in Belgium)',16,'길리안 초콜릿', 'Guylian Chocolate OPUS', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_sd5qf4em190926161819.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,3);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('시트러스 계열의 상쾌하고 모던하고 우아한 향이 부드러우면서 강렬한 남성의 멋을 지속적으로 표현해 주는 향수.
+예술적 장인 정신에 현대적 감각을 더하여 과거와 미래를 동시에 느끼게 해주며 편안하고 에너지가 넘치는 남성을 표현해주는 향수임.','The past and the future, artfully interwoven.
+Reflecting the art of craftsmanship with a modern edge, this exhilarating citrus fragrance creates a lasting, masculine impression.',17,'존 바바토스 아티산 EDT', 'John Varvatos Artisan Eau de Toilette Spray', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_bf2lt0cv.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,4);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('보이스캐디 T9은 인공지능(V.AI)이 별도의 조작 없이 샷과 퍼트를 자동으로 인식하여 스코어를 기록함. 또한 템포 연습모드는 연습장에서도 목표 템포를 설정하여 일관성 있는 스윙 템포를 연습할 수 있음. 더 정교해진 스마트 그린뷰와 퍼트뷰, 230군데 골프장에서 가용 가능한 APL 서비스(실시간 핀위치)로 새로운 골프 경험 가능.','Voice Caddie T9 recognizes shot and putt automatically without any separate control with V.AI and record scores. In addition, Tempo Practice Mode sets up a goal tempo even at the driving range to practice consistent swing tempo. Please take the experience of playing golf with more precise smart green view and putt view.',18,'보이스캐디 T9', 'VOICECADDIE T9', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_cx4on5xy220429154323.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('피부 탄력을 빠르게 향상시키며, 잔주름과 굵은 주름을 완화하고 늘어진 모공을 촘촘하게 케어하는데 탁월한 효능이 있는 미용 기기로
+전세계 70여개국 밀리언 셀러 제품.
+풍부한 산소를 공급하여 피부에 활력을 불어넣고 피부톤 개선 및 촉촉한 피부 메이크업에도 도움을 줌.','DermaWand® works because it combines the radio frequency effects of thermal energy and instant massaging stimulation
+which helps the skin appear more toned and tightened, temporarily smoothing out fine lines and wrinkles.',19,'더마원드 안티 에이징', 'Dermawand Anti-Aging Device', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_wb8xj2wr190729084904.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('스와로브스키의 아이콘 스완 모티브가 시선을 사로잡고,
+밀레니얼 핑크 컬러의 풀 컷 크리스털 바디와 깔끔한 파베 세팅 클리어 크리스털 라인의 완벽한 조화가 돋보이는 제품.
+(소재 : 로즈골드 도금 / 길이: 38cm)','The legendary swan motif takes center stage, crafted with a full-cut crystal body in cool millennial pink and crisp clear pavé lines.
+A stunning and romantic creation, which is unmistakably Swarovski.',20,'스와로브스키 대즐링 스완 목걸이', 'Swarovski DAZZLING SWAN NECKLACE', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_xq8qg4vz190327133722.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('콜란토테는 건강에 패션을 입힌 일본의 대표적인 헬스케어 액세서리 브랜드로 전세계 40여 개국에서 사랑받고 있음.
+착용한 손과 팔의 결림 현상을 완화시켜 근육통을 개선시키는데 효과가 있는 제품.
+(의료기기 인증번호: 수인18-4507호/ 팔찌길이: 20cm, 사이즈 축소 가능/ 재질 : 알레르기-프리 스테인레스 스틸/ SUS316L, 카본, 에폭시수지, 1000G 영구자석)','Colan-tote is a Japanese leading healthcare accessory brand and is loved in more than 40 countries around the world.
+This product is effective in improving muscle pain by easing the condensation of the hands and arms worn.
+(Medical Certification No. 18-4507/ Length: 52cm, size reduction possible/ Material: Allergy-free stainless steel/ SUS316L, carbon, epoxy, 1000G Ferrite permanent magnet)',21,'콜란토테 카보레이 헬스케어 팔찌', 'COLANTOTTE CARBOLY HEALTHCARE LOOP', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_gj6vl2de181228150627.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('독창성을 중시하는 남성을 위한 세련된 디자인의 웰니스 액세서리!
+스테인레스 스틸과 하이테크 탄소섬유가 조화롭게 어우러진 토스카나 셀리니 남성 팔찌. 시그니처 스트랩으로 디자인된 독특한 밴드안에 99.99% 순수 게르마늄 및 네오디뮴 자석을 특허 받은 기술에 접목한 제품.','A wellness accessory with a sophisticated design for men who value originality!
+The Tuscan Cellini mens bracelet is a harmonious combination of stainless steel and high-tech carbon fiber. Patented technology of 99.99% pure germanium and neodymium magnets in a unique band designed as a signature strap.',22,'토스카나 셀리니 팔찌 남성용', 'TOSCANA Of Firenze Cellini Bracelet', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_qt8mb0cf171116130840.png', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('링스오브런던의 드라이버 여성용 시계는 디자인 어워즈에서 수상한 디자인으로 영국의 장인정신이 결합된 제품임.
+순수한 화이트 다이얼에 블루핸즈 및 로마숫자로 포인트를 준 스테인레스 스틸 케이스와 부드러운 블랙 가죽 스트랩으로 캐주얼이나 정장에 모두 어울리는 우아함이 돋보이는 제품임.','The new Driver Watch combines the Links of London award winning design heritage and British craftsmanship.
+The stainless-steel case, with Roman numerals on a pure white dial and the soft black leather strap bring out a unique elegance for a casual or a formal appearance.',23,'링스오브런던 드라이버 워치', 'Links of London Driver Watch', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_le4hx8kh190425142128.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('토스카나 콘테시나 여성 목걸이는 이탈리아 르네상스에서 영감을 받은 18K 로즈골드 키스로 시대를 초월한 우아함을 선사함. 이온을 발생시키는 토르말린 원석 및 99.99%의 순수 게르마늄과 자연 발생적 희토류 네오디뮴 자석을 특허 받은 기술에 접목한 제품. 길이 : 46cm','The TOSCANA Contessina ladies necklace accented with 18K rose gold kisses romanticizes the timeless elegance of the Italian Renaissance. Patented with naturally occurring rare earth Neodymium magnets, Tourmaline gemstone and ion-generating 99.99% pure Germanium it is the perfect rejuvenating accessory. Its wealth of secret benefits include boosting blood flow, enabling restful sleep and soothing away aching muscles. Length: 46cm',22,'토스카나 콘테시나 목걸이 여성용', 'TOSCANA LADIES NECKLACE', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_fb8gy4on180314141401.png', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('사랑하는 사람들을 위한 아주 특별한 선물!
+18K 로즈골드와 반짝이는 스와로브스키가 조화롭게 어우러진 토스카나 셀리니 여성 팔찌. 시그니처 스트랩으로 디자인된 독특한 밴드안에 99.99% 순수 게르마늄 및 네오디뮴 자석을 특허받은 기술에 접목한 제품.','Discover a truly unique gift for yourself or a loved one! Plated in 18K rose gold with a Swarovski crystal, this elegant TOSCANA ladies bracelet harnesses patented technologies integrating naturally occurring rare earth Neodymium magnets and ion-generating 99.99% pure Germanium into its distinctive ‘bandolier’ design signature strap. Its wealth of secret benefits include boosting blood flow, enabling restful sleep and soothing away muscle aches.',22,'토스카나 셀리니 팔찌 여성용', 'TOSCANA Of Firenze Cellini Bracelet', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_be1ww8hq180302165103.PNG', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('올비아 컬렉션’은 이탈리아 북동부에 위치한 올비아 지역의 아름다움을 모티브로 한 시계임.
+골드 톤 케이스와 로마자 인덱스는 세련된 느낌을 주고, 슬림한 스트랩의 조화는 클래식한 감성을 선사함.
+행운의 뜻을 담은 아이그너의 상징인 말발굽 디자인은 시즌리스 아이템으로 활용도가 높은 제품임.','A classic creation from AIGNER in its iconic horse-shoe shaped case.
+The gold plated steel case encasing a matching patterned dial with Roman indexes.
+Brown strap compliment the look of this elegant timepiece.',24,'아이그너 올비아 II 여성용 시계', 'AIGNER Olbia II Ladies Watch', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_qr4ze0ts190528150254.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+INSERT INTO product(
+	content_kor, content_eng, brand_id, name_kor, name_eng, image_url, original_price, sale_rate, total_cnt, created_date, updated_date, deleted_date, category_id)
+	VALUES ('몽블랑의 클래식한 마이스터스튁 라인의 반지갑으로, 고급스러운 블랙 색상의 유러피언 송아지 가죽으로 만들어 졌으며,
+6개의 카드 포켓과 지폐를 넣을 수 있는 두 개의 공간으로 구성되어 있음. (모델 :  NO.14548)','Wallet 6cc, made of black European full-grain cowhide with unique Montblanc deep shine, jacquard lining with Montblanc brand name, Montblanc emblem with palladium-finish ring.',25,'몽블랑 MST 지갑', 'Montblanc MST Wallet 6cc Black', 'https://dutyfree.flyasiana.com/utl/web/imageSrc.do?section=thumb&path=product&physical=basic_cy3va9hr.jpg', 1,0.8,100, '2023-02-20 00:00:00', null, null,5);
+
+CREATE TABLE region
+ (region_id serial PRIMARY KEY NOT NULL,
+	region_name_kor VARCHAR(50) NOT NULL,
+	region_name_eng VARCHAR(50) NOT NULL,
+	region_code VARCHAR(10) NOT NULL);
+
+	INSERT INTO public.region(
+	region_name_kor, region_name_eng, region_code)
+	VALUES 
+	('인천','Incheon','ICN'),
+	('부산','busan','PUS'),
+	('김포','KimPo','GMP'),
+	('오사카','Osaka','KIX'),
+	('후쿠오카','Fukuoka','FUK'),
+	('나리타','Narita','NRT'),
+	('삿포로(치토세)','Sapporo (Chitose)','CTS'),
+	('다낭','Danang','DAD'),
+	('세부','Cebu','CEB'),
+	('옌지','Yanji','YNJ'),
+	('타이페이','Taipei','TPE');
+	
+create table review
+(
+	review_id serial primary key,
+	member_id integer not null,
+	product_id integer not null,
+	rate numeric not null,
+	contents varchar(1000) not null,
+	create_date	TIMESTAMP	NOT NULL
+);
+
+insert into review(member_id, product_id, rate, contents, create_date)
+values(10, 25, 10, '좋아요', '2023-02-25 22:18:24.89047');
+
+insert into member
+(member_id, id, password, name, english_first, english_last, email, phone_number, birth_date, role, create_date)
+values(10, 'aron', 'aron', 'aron', 'a', 'ron', 'aron@naver.com', '010-2792-8435', '2000-07-16', 'USER', '2023-02-25 18:45:20.924571');

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>회원가입</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<th:block layout:fragment="css">
+<style>
+* {
+    font-family: 'NanumSquareNeo-Variable';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#idresult, #passwordresult {
+	font-size: 0.5rem;
+}
+
+#form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#form-inner-container {
+    background-color: white;
+    max-width: 70%;
+    border-radius: 8px;
+    box-shadow: 0 0 20px gainsboro;
+}
+
+#sign-up-container, #sign-in-container {
+    padding: 60px 80px;
+    width: 500px;
+    display: inline-block;
+}
+
+form input {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #E5E9F5;
+    background-color: #F6F7FA;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#form-controls {
+	margin-top: 40px;
+	display: flex;
+	justify-content: center;
+    margin-bottom: 20px;
+}
+
+
+h1 {
+    color: rgb(69, 75, 82);
+    font-size: 150%;
+    font-weight: 500;
+}
+
+label {
+    color: #7369AB;
+}
+
+::placeholder {
+    color: #C0C7DB;
+    font-size: larger;
+    letter-spacing: 1.2px;
+}
+
+#form-controls button {
+    border: none;
+    font-size: 120%;
+}
+
+#form-controls button:hover {
+    cursor: pointer;
+}
+
+button[type="submit"] {
+    padding: 16px 75px;
+    background-color: #ff6678;
+    border-radius: 10px;
+    color: white;
+}
+
+button[type="submit"]:hover {
+    background-color: rgb(239, 0, 16);
+}
+
+button[type="button"] {
+    padding: 16px 0 16px 35px;
+    background-color: transparent;
+    color: #ff6678;
+}
+
+#terms {
+    width: 30px;
+    height: 30px;
+    appearance: none;
+    border: 2px solid #7369AB;
+    border-radius: 4px;
+    position: relative;
+}
+
+#terms:checked:after {
+    content: '\2713';
+    color: #7369AB;
+    font-size: 24px;
+    position: absolute;
+    top: 0;
+    left: 3px;
+}
+
+label[for="terms"] {
+    display: inline-block;
+    width: 80%;
+    margin-left: 10px;
+}
+
+.termsLink {
+    color: #EF7886;
+    text-decoration: none;
+}
+
+.hide {
+    display: none!important;
+}
+
+#animation-container {
+    display: inline-block;
+}
+</style>
+</th:block>
+<th:block layout:fragment="script">
+<script th:inline="javascript">
+$(document).ready(function () {
+	var isId = true;
+
+	$("#id").keyup(function () {
+		var ckid = $("#id").val();
+		if(ckid.length < 5 || ckid.length > 13) {
+			$("#idresult").text("아이디는 5자 이상 13자 이하입니다");
+			$("#idresult").css("color","red");
+			isId = false;
+		} else {
+            $.ajax({
+            	url: "idcheck?" + $.param({"id": ckid}),
+              	type: 'GET',
+              	dataType: 'JSON',
+              	success: function (result) {
+                    if (result.exist == false) {
+                    	$("#idresult").text(ckid + "는 사용가능합니다");
+                    	$("#idresult").css("color","green");
+                        isId = true;
+                    } else {
+                    	$("#idresult").text(ckid + "는 이미 존재하는 아이디입니다");
+                    	$("#idresult").css("color","red");
+                        isId = false;
+                    }
+                }
+			});
+		}
+	});
+	
+	$("#passwordCheck").keyup(function () {
+		var pwd = $("#password").val();
+		var pwdcheck = $("#passwordCheck").val();
+		if(pwd !== pwdcheck) {
+			$("#passwordresult").text("비밀번호와 일치하지 않습니다");
+			$("#passwordresult").css("color","red");
+		} else {
+			$("#passwordresult").text("");
+		}
+	});
+	
+	$(".form-inner-container").on("submit", function() {
+		  var id = $("#id").val();
+		  var password = $("#password").val();
+		  var passwordCheck = $("#passwordCheck").val();
+		  var name = $("#name").val();
+		  var englishFirst = $("#englishFirst").val();
+		  var englishLast = $("#englishLast").val();
+		  var email = $("#email").val();
+		  var phoneNumber = $("#phoneNumber").val();
+		  var birthDate = $("#birthDate").val();
+
+		  if (id.length < 5 || id.length > 13) {
+			  event.preventDefault();
+			  alert("아이디는 5자 이상 13자 이하입니다");
+			  $("#id").focus();
+		  } else if (!isId) {
+			  event.preventDefault();
+			  alert("이미 존재하는 아이디입니다");
+			  $("#id").focus();
+		  } else if (password.length <= 0) {
+			  event.preventDefault();
+			  alert("비밀번호는 필수 항목입니다");
+			  $("#password").focus();
+		  } else if (password !== passwordCheck) {
+			  event.preventDefault();
+			  alert("비밀번호 확인이 비밀번호와 일치하지 않습니다");
+			  $("#passwordCheck").focus();
+		  } else if (name.length <= 0) {
+			  event.preventDefault();
+			  alert("이름은 필수 항목입니다");
+			  $("#name").focus();
+		  } else if (englishFirst.length <= 0) {
+			  event.preventDefault();
+			  alert("영문 이름은 필수 항목입니다");
+			  $("#englishFirst").focus();
+		  } else if (englishLast.length <= 0) {
+			  event.preventDefault();
+			  alert("영문 성은 필수 항목입니다");
+			  $("#englishLast").focus();
+		  } else if (email.length <= 0) {
+			  event.preventDefault();
+			  alert("이메일은 필수 항목입니다");
+			  $("#email").focus();
+		  } else if (!verifyEmail()) {
+			  event.preventDefault();
+			  alert("이메일 형식이 잘못되었습니다");
+			  $("#email").focus();
+		  } else if (phoneNumber.length <= 0) {
+			  event.preventDefault();
+			  alert("연락처는 필수 항목입니다");
+			  $("#phoneNumber").focus();
+		  } else if (!verifyPhoneNumber()) {
+			  event.preventDefault();
+			  alert("연락처 형식이 잘못되었습니다");
+			  $("#phoneNumber").focus();
+		  } else if (birthDate.length <= 0) {
+			  event.preventDefault();
+			  alert("생년월일은 필수 항목입니다");
+			  $("#birthDate").focus();
+		  }
+	  });
+});
+
+verifyEmail = function() {
+	var emailVal = $("#email").val();
+	var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+	
+	if (emailVal.match(regExp) != null) {
+	  return true;
+	}
+	else {
+	  return false;
+	}
+};
+
+verifyPhoneNumber = function() {
+	var phoneNumberVal = $("#phoneNumber").val();
+	var regExp = /^\d{3}-\d{3,4}-\d{4}$/;
+	
+	if (phoneNumberVal.match(regExp) != null) {
+	  return true;
+	}
+	else {
+	  return false;
+	}
+};
+</script>
+</th:block>
+
+<div layout:fragment="content" >
+<div id="form-container">
+	<form th:action="@{/members/signup}" method="post" th:object="${member}" class="form-inner-container">
+		<div id="sign-up-container">
+	        <h1>회원가입</h1>
+	
+        	<label th:for="id">아이디</label>
+			<input type="text" id="id" name="id">
+			<p id="idresult"></p>
+			
+			<label th:for="password">비밀번호</label>
+			<input type="password" id="password" name="password">
+			
+			<label th:for="passwordCheck">비밀번호 확인</label>
+			<input type="password" id="passwordCheck">
+			<p id="passwordresult"></p>
+
+			<label th:for="name">이름</label>
+			<input type="text" id="name" name="name">
+			
+			<label th:for="englishFirst">영문 이름</label>
+			<input type="text" id="englishFirst" name="englishFirst">
+			
+			<label th:for="englishLast">영문 성</label>
+			<input type="text" id="englishLast" name="englishLast">
+			
+			<label th:for="email">이메일</label>
+			<input type="text" id="email" name="email">
+			
+			<label th:for="phoneNumber">연락처</label>
+			<input type="text" id="phoneNumber" name="phoneNumber" placeholder="010-0000-0000">
+			
+			<label th:for="birthDate">생년월일</label>
+			<input type="date" id="birthDate" name="birthDate">
+			
+			<div id="form-controls">
+				<button type="submit">회원가입</button>
+	        </div>
+	     </div>
+	</form>
+</div>
+</div>
+</html>

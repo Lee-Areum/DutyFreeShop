@@ -1,0 +1,12 @@
+CREATE TABLE airline
+ (airline_id serial PRIMARY KEY NOT NULL,
+	airline_name VARCHAR(10) NOT NULL,
+	departure INT NOT NULL,
+	arrival INT NOT NULL,
+	depart_time TIMESTAMP NOT NULL
+)
+
+INSERT INTO public.airline(
+	airline_name, departure, arrival, depart_time)
+	VALUES ('AX101', 1, 2, '20230221'::date),
+	('BX101', 1, 2, '20230221'::date);

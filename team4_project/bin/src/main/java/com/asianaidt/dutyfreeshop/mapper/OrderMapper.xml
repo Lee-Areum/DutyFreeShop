@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asianaidt.dutyfreeshop.mapper.OrderMapper">
+	<select id="getRegion" resultType="RegionDTO">
+		select region_id,region_name_kor,region_name_eng,region_code
+		from region
+	</select>
+	
+	<select id="searchAirline" parameterType="AirlineDTO" resultType="AirlineDTO">
+		select airline_id,airline_name,departure,arrival,depart_time
+		from airline
+		where departure = #{departure} and arrival = #{arrival} and to_char(depart_time,'YYYY-MM-DD') = #{departTime};
+	</select>
+	
+	<select id="getBasketByUser" parameterType="int" resultType="hashmap">
+		SELECT basket_id, member_id, p.product_id, amount, br.brand_name_kor, br.brand_name_eng, p.name_kor, p.name_eng, image_url, original_price, sale_rate, total_cnt,created_date
+		FROM public.basket b INNER JOIN public.product p 
+		ON p.product_id = b.product_id
+		INNER JOIN public.brand br
+		ON p.brand_id = br.brand_id
+		WHERE b.member_id = #{memberIdx};
+	</select>
+	
+</mapper>

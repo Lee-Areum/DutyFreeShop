@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asianaidt.dutyfreeshop.mapper.PaymentMapper">
+	
+	<select id="getPayment" parameterType="int" resultType="PaymentDTO">
+		select *
+		from payment
+		where member_id = #{memberId}
+	</select>
+	
+	<select id="getTotalPayment" parameterType="int" resultType="TotalPaymentDTO">
+		select sum(price_usd) as price_usd, sum(price_krw) as price_krw from payment
+		where member_id = #{memberId};
+	</select>
+	
+	<select id="getPaymentList" parameterType="int" resultType="PaymentListDTO">
+		select distinct pay.payment_id, pay.member_id, pay.unique_payment_number, pay.order_first_name, pay.order_last_name, pay.order_name, pro.image_url, pro.name_kor, pro.name_eng, count(*) as extra_cnt, pay.payment_date, pay.status, sum(pay.price_usd * o.amount) as sum_price_usd, sum(pay.price_krw * o.amount) as sum_price_krw
+		from payment pay
+		join orderRecord o
+		on pay.payment_id = o.payment_id
+		join product pro
+		on o.product_id = pro.product_id
+		join brand b
+		on pro.brand_id = b.brand_id
+		join category c
+		on pro.category_id = c.category_id
+		where pay.member_id = #{memberId}
+		group by pay.payment_id, pro.product_id
+	</select>
+	
+	<select id="getPaymentDetail" parameterType="int" resultType="PaymentDetailDTO">
+		select pay.payment_id, pay.member_id, pay.order_first_name, pay.order_last_name, pay.order_name,
+		pay.phone_number, pay.passport_number, pay.birth_date, pay.email, pay.nation,
+		pay.payment_date, pay.payment_method, pay.unique_payment_number, pay.status,
+		pro.name_kor, pro.name_eng, pro.image_url, o.price_usd, o.price_krw, o.amount
+		
+		from payment pay
+		join orderRecord o
+		on pay.payment_id = o.payment_id
+		join product pro
+		on o.product_id = pro.product_id
+		join brand b
+		on pro.brand_id = b.brand_id
+		join category c
+		on pro.category_id = c.category_id
+		where pay.payment_id = #{paymentId} and pay.member_id = #{memberId}
+	</select>
+	
+	<select id="getMyPageMember" parameterType="int" resultType="MyPageMemberDTO">
+		select member_id, name, english_first, english_last
+		from member
+		where member_id = #{memberId}
+	</select>
+	
+</mapper>

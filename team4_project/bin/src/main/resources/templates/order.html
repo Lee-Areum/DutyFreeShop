@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- bootstrap -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script type="text/javascript" th:src="@{/js/order.js}"></script>
+<title>주문/결제</title>
+</head>
+<body>
+ <h1> 주문 결제 페이지입니다 </h1>
+ <div id="order_header">
+ 	<div>홈 > 주문/결제</div>
+ 	<div id="page_state">
+ 		<div id="order_title">
+ 			<h2>주문/결제</h2>
+ 			<p>ORDER/ACCOUNTS</p>
+ 		</div>
+ 		
+ 		<div>step 자리</div>
+ 	</div>
+ 	<hr>
+ 	<br>
+ </div>
+ 	<!-- 구매할 상품 정보들 -->
+ 	<div id="order_products">
+ 		<h5>주문상품</h5>
+ 		<table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">상품</th>
+		      <th scope="col">상품명/옵션</th>
+		      <th scope="col">수량</th>
+		      <th scope="col">주문금액</th>
+		      <th scope="col">할인가능여부</th>
+		    </tr>
+		  </thead>
+		  <tbody th:with="totalPrice=0">
+		  	<tr th:each="row : ${products}">
+	        	 <td><img class="img-thumbnail" th:src="${row['image_url']}"></td>  
+			     <td>[[${row['name_kor']}]]<br>([[${row['brand_name_kor']}]])</td>
+			     <td>[[${row['total_cnt']}]]개</td>
+			     <td th:with="totalPrice = ${totalPrice + row['original_price']}">[[${row['original_price']}]]$</td> <!-- 환율 적용하기 -->
+			     <td th:if="${row['sale_rate']} > 0">할인가능<br>[[${row['sale_rate']}]]%<br></td> <!-- 할인율 적용하기 -->
+			     <td th:if="${row['sale_rate']} <= 0">할인불가능</td>
+		    </tr> <!-- 총 합 구하기 -->
+		    
+		  <!-- foreach로 상품들 넣기 -->
+		    <tr class="table-secondary">
+		      <td colspan="3"></td>
+		      <td>주문금액 : </td>
+		      <td>[[${totalPrice}]]</td> <!-- TODO : 합계구하기 -->
+		    </tr>
+		  </tbody>
+		</table>
+ 	</div>
+ 	<br>
+ 	<div id="order_airline"> 		
+ 		<h5>항공편 정보 입력</h5>
+		<form>
+ 		<table class="table">
+		  <tbody>
+		    <tr class="align-center">
+		    	<td class="table-light">출발지</td>
+		    	<td>
+		    		<!-- TODO : 출발지 넣기 -->
+		    		<select id="departure" class="form-select" aria-label="Default select example">
+		    			<option selected value="-1">노선선택</option>
+		    			<block th:each="row : ${regions}">
+							<option th:value="${row.regionId}">[[${row.regionNameKor}]]</option>
+		    			</block>
+		    		</select>
+		    		<p>상품 수령을 원하시는 편명 기준으로 출/도착지 선택해주시기 바랍니다.<br>
+					(예시. 후쿠오카발 부산행 귀국편 수령의 경우, 출발지 : 후쿠오카, 도착지 : 부산)</p>
+		    	</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">도착지</td>
+		    	<td>
+		    		<!-- TODO : 도착지 넣기 -->
+		    		<select id="arrival" class="form-select" aria-label="Default select example">
+		    			<option selected value="-1">노선선택</option>
+		    			<block th:each="row : ${regions}">
+							<option th:value=${row.regionId}>[[${row.regionNameKor}]]</option>
+		    			</block>
+		    		</select>
+		    	</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">탑승일</td>
+		    	<td>
+					<input id="startDate" class="form-control" type="date"/>	    	
+				</td>
+				<td>
+					<button id="btnSearchAirline" type="button" class="btn btn-primary">검색</button>
+				</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">출발시간/탑승편</td>
+		    	<td id="airlines">
+		    	</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">안내</td>
+		    	<td>
+		    		<div>
+		    			<p>*인천/김포발 노선은 인천전용노선(화면 우측 상단)으로 이동하여 구매바랍니다.<br>
+						*면세쇼핑특별편은 '출발지 : 인천/김포/부산, 도착지 : 면세쇼핑특별편' 선택 바랍니다.<br>
+						*상품 인도 후 고객사정에의한 환불/교환은 불가하며, 제품하자의 경우 환불만 가능합니다.(교환불가)</p>
+						<ol>
+							<li>상품은 에어부산 국제선 기내에서 승무원에 의해 고객님께 인도됩니다.</li>
+							<li>결항이 발생하면 상품을 인도해 드릴 수 없습니다.</li>
+							<li>상품의 결제일과 탑승일의 환율차이로 인한 차액은 청구하거나 환불되지 않습니다.</li>
+							<li>주류의 경우 구입가격은 주문하신 품목을 예약하신 달과 전달 받으시는 달이 다를 경우, 환율 및 할인 이벤트에 따라 변경될 수 있습니다.</li>
+							<li>면세쇼핑특별편은 정부지침에 의거 예약판매가 가능합니다.(기내현장구매 불가)</li>
+						</ol>
+		    		</div>
+		    	</td>
+		    </tr>
+		  </tbody>
+		</table>
+	</form>
+ 	</div>
+	<br>
+	<div id="order_customer_data">
+		<h5>주문자 정보 입력</h5>
+		<table class="table">
+		  <tbody>
+		    <tr class="align-center">
+		    	<td class="table-light">Last Name</td>
+		    	<td class="">
+		    		<input id="first_name" class="form-control" type="text" value="LEE" disabled readonly>
+		    	</td>
+		    	<td class="table-light">First Name</td>
+		    	<td class="">
+		    		<input id="first_name" class="form-control" type="text" value="AREUM" disabled readonly>
+		    	</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">이름</td>
+		    	<td class="">
+		    		<input id="first_name" class="form-control" type="text" value="이아름" disabled readonly>
+		    	</td>
+		    	<td class="table-light">연락처</td>
+		    	<td class="input-group">
+				  <input type="text" class="form-control" placeholder="010" aria-label="phone1">
+				  <span class="input-group-text">-</span>
+				  <input type="text" class="form-control" placeholder="0000" aria-label="phone2">
+				  <span class="input-group-text">-</span>
+				  <input type="text" class="form-control" placeholder="0000" aria-label="phone3">
+				</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">여권번호</td>
+		    	<td class="">
+		    		<input id="first_name" class="form-control" type="text" value="dskfjsdlfjdkslfj">
+		    	</td>
+		    	<td class="table-light">생년월일</td>
+		    	<td class="input-group">
+				  <input type="text" class="form-control" placeholder="2022" aria-label="birth_year">
+				  <span class="input-group-text">년</span>
+				  <input type="text" class="form-control" placeholder="05" aria-label="month">
+				  <span class="input-group-text">월</span>
+				  <input type="text" class="form-control" placeholder="03" aria-label="day">
+				  <span class="input-group-text">일</span>
+				</td>
+		    </tr>
+		    <tr class="align-center">
+		    	<td class="table-light">이메일</td>
+		    	<td class="">
+		    		<input id="first_name" class="form-control" type="text" value="LEE" disabled readonly>
+		    	</td>
+		    	<td class="table-light">국적정보</td>
+		    	<td>
+		    		<select id="nation" class="form-select" aria-label="Default select example">
+		    			<option value="-1" selected>국적정보를 선택하세요</option>
+		    			<!-- 영어로 -->
+						 <option value="대한민국">대한민국</option>
+						 <option value="중국">중국</option>
+						 <option value="일본">일본</option>
+						 <option value="대만">대만</option>
+						 <option value="홍콩">홍콩</option>
+						 <option value="마카오">마카오</option>
+						 <option value="괌">괌</option>
+						 <option value="필리핀">필리핀</option>
+						 <option value="러시아">러시아</option>
+						 <option value="베트남">베트남</option>
+						 <option value="몽골">몽골</option>
+						 <option value="라오스">라오스</option>
+						 <option value="미국">미국</option>
+		    		</select>		    	
+		    	</td>
+		    </tr>
+		  </tbody>
+		</table>
+		<p class="text-danger">* 여권정보와 동일한 내용으로 기입되지 않으면 상품 인도가 불가할 수 있으며, 관세법상 불이익이 있을 수 있습니다.</p>
+	</div>
+	<div class="tb_pagecf">
+		<h5 class="h3icon left"> 회원 개인정보 수집동의 </h5>
+		<h5 class="right"> 동의합니다. 
+		<input type="checkbox" name="memberConfirm" id="memberConfirm" value="Y">
+		</h5> 
+				
+ 		<div>                                                                                                                                                                                                                                                                                                                                            
+         	<textarea class="form-control" title="수집동의" name="EtcContents" id="EtcContents" readonly="readonly" bytelen="15" style="margin-top: 0px; margin-bottom: 15px; height: 150px; weight:auto;">1. 목적
+ 가. 회원 주문 서비스 제공을 위한 구매 및 주문정보 확인 등의 계약 이행 목적
+ 나. 고객 상담, 고객불만 접수 및 처리, 분쟁 조정을 위한 기록 관리
+ 다. 관세법 규정에 의거
+
+2. 항목
+가. 이름(영문, 국문)
+나. 연락처
+다. 이메일
+라. 생년월일
+마. 국적
+
+3. 보유 기간
+ 수집된 개인정보 중 관계법령 및 이용 약관에서 명시된 항목은 해당기간 동안 보유되며,
+그 외의 개인정보는 목적 달성 후 즉시 파기됩니다.
+
+[개인정보 보존이유 및 보존기간]
+              		구분			                                             보존이유	         		    보존기간
+계약 또는 청약철회 등에 관한 기록	     	 전자상거래 등에서의 소비자 보호에 관한 법률	      5년
+대금결제 및 재화 등의 공급에 관한 기록   	 전자상거래 등에서의 소비자 보호에 관한 법률	      5년		
+소비자의 불만 또는 분쟁 처리 기록		 전자상거래 등에서의 소비자 보호에 관한 법률	      3년
+본인확인에 관한 기록		                 전자상거래 등에서의 소비자 보호에 관한 법률	     6개월
+홈페이지 방문 기록	                  		 통신비밀보호법  	                       	      		     3개월
+
+4. 기내 면세 상품 판매 서비스 제공을 위하여 필요한 최소한의 개인정보이므로, 동의를 해 주셔야 면세 상품의 구매가 가능합니다.          				
+         			</textarea>
+				</div> 
+				</div> 
+	<br>
+	<div class="tb_pagecf">
+		<h5> 회원 고유식별정보 수집동의 </h5>
+		<h5> 동의합니다. 
+			<input type="checkbox" name="memberInfoConfirm" id="memberInfoConfirm" value="Y">
+		</h5> 
+		<div>                                                                                                                                                                                                                                                                                                                                            
+			<textarea class="form-control" title="수집동의" name="EtcContents" id="EtcContents" readonly="readonly" bytelen="15" style="margin-top: 0px; margin-bottom: 15px; height: 150px; weight:auto;">1. 고유 식별정보 수집 및 이용 목적
+-구매 서비스 제공 및 본인 확인
+-기용품 등 관리에 관한 고시 의거
+ 
+2. 수집하는 개인정보의 항목
+- 여권번호
+  
+3. 개인정보의 보유 및 이용기간
+ 서비스이용 기간 및 관계법령에서 규정한 기간 동안 보유합니다.
+  
+고유식별정보 수집 동의를 거부하실 수 있으나, 동의하지 않으실 경우 에어부산 기내면세점 구매 서비스를 이용하실 수 없습니다. 
+			</textarea>
+		</div> 
+	</div> 
+	<br>
+	<div>
+		<div>
+			<label for="orderConfirm" style="display:none"> 동의합니다.</label>
+			<input type="checkbox" name="orderConfirm" id="orderConfirm"> 
+				상기 사항을 모두 확인하였으며, 이에 동의합니다.
+		</div>
+		<div>
+			<div class="right txt_120 txt_bold">결제금액 : 
+			<span class="txt_150 txt_red" id="totalPrice3_2">￦124,000</span>
+			<span id="finalPrice2"></span>
+			</div>
+		</div>
+	</div>
+	<br>
+	<button id="btnStartPayment" type="button" class="btn btn-primary">결제하기</button>
+</body>
+</html>

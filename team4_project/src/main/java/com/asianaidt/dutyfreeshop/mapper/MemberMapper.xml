@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asianaidt.dutyfreeshop.mapper.MemberMapper">
+	
+ 	<insert id="signup" parameterType="MemberDTO">
+ 	  insert into member(id, password, name, english_first, english_last, email, phone_number, birth_date, role, create_date)
+ 	  values (#{id}, #{password}, #{name}, #{englishFirst}, #{englishLast}, #{email}, #{phoneNumber}, to_date(#{birthDate}, 'YYYY-MM-DD'), #{role}, now())
+ 	</insert>
+ 	
+ 	<select id="getMember" parameterType="string" resultType="MemberDTO" >
+ 	   select *
+ 	   from member
+ 	   where id = #{id} and delete_date is null
+ 	</select>
+ 	
+ 	<select id="getIdCheck" parameterType="string" resultType="int">
+ 		select count(id)
+ 		from member
+ 		where id = #{id}
+ 	</select>
+	
+</mapper>

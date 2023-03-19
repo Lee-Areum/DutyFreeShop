@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asianaidt.dutyfreeshop.mapper.BasketMapper">
+	
+	<!-- <select id="getBasket" parameterType="int" resultType="BasketDTO">
+		select * from basket
+		where member_id=#{num}
+	</select> -->
+	
+	<select id="getBasket" parameterType="int" resultType="BasketDTO">
+		select basket_id,member_id,product.product_id,amount,name_kor,original_price,product.image_url,product.sale_rate
+		from basket inner join product
+		on basket.product_id=product.product_id
+		where member_id=#{num}
+	</select>
+	
+	<delete id="deleteBasket" parameterType="int">
+		delete from basket
+		where basket_id=#{num}
+	</delete>
+	
+	<update id="updateItem" parameterType="BasketDTO">
+		update basket
+		set amount=#{amount}
+		where basket_id=#{basketId}
+	</update>
+	
+	<delete id="basketMultiDelete" parameterType="arraylist">
+		delete from basket
+		where basket_id in <foreach item="item" collection="list" open="(" separator="," close=")" >
+          #{item}
+    	</foreach>
+	</delete> 
+	
+	<select id="getExchangeRate" parameterType="string" resultType="bigdecimal">
+		select exchange_rate 
+		from exchangerate
+		where exchange_unit=#{input_string}
+	</select>
+	
+</mapper>

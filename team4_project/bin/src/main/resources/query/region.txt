@@ -1,0 +1,20 @@
+CREATE TABLE region
+ (region_id serial PRIMARY KEY NOT NULL,
+	region_name_kor VARCHAR(50) NOT NULL,
+	region_name_eng VARCHAR(50) NOT NULL,
+	region_code VARCHAR(10) NOT NULL);
+	
+	INSERT INTO public.region(
+	region_name_kor, region_name_eng, region_code)
+	VALUES ('나리타','Narita','NRT'),
+	('다낭','Danang','DAD'),
+	('나리타','Narita','NRT'),
+	('부산','busan','PUS'),
+	('삿포로(치토세)','Sapporo (Chitose)','CTS'),
+	('세부','Cebu','CEB'),
+	('옌지','Yanji','YNJ'),
+	('오사카','Osaka','KIX'),
+	('타이페이','Taipei','TPE'),
+	('후쿠오카','Fukuoka','FUK'),
+	('인천','Incheon','ICN'),
+	('김포','KimPo','GMP');

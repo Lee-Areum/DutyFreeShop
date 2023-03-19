@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asianaidt.dutyfreeshop.mapper.ReviewMapper">
+	
+ 	<select id="getCheckOrder" parameterType="ReviewCheckRequestDTO" resultType="int" >
+ 	   select count(*)
+ 	   from orderRecord
+ 	   where member_id = #{memberId} and product_id = #{productId}
+ 	</select>
+ 	
+ 	<select id="getCheckReview" parameterType="ReviewCheckRequestDTO" resultType="int" >
+ 	   select count(*)
+ 	   from review
+ 	   where member_id = #{memberId} and product_id = #{productId}
+ 	</select>
+ 	
+ 	<insert id="insertReview" parameterType="ReviewRegisterDTO">
+ 	  insert into review(member_id, product_id, rate, contents, create_date)
+ 	  values (#{memberId}, #{productId}, #{rate}, #{contents}, now())
+ 	</insert>
+ 	
+ 	<select id="getReview" parameterType="int" resultType="ReviewRegisterDTO" >
+ 	   select r.review_id, r.member_id, r.product_id, r.rate, r.contents, CAST(r.create_date as date), m.id
+ 	   from review as r
+ 	   join member as m
+ 	   on r.member_id = m.member_id
+ 	   where product_id = #{productId}
+ 	</select>
+	
+</mapper>

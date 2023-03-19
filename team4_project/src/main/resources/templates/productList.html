@@ -1,0 +1,231 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+<head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author"
+	content="Mark Otto, Jacob Thornton, 그리고 Bootstrap 기여자들">
+<meta name="generator" content="Hugo 0.104.2">
+<title>아시아나 면세점 페이지</title>
+<link rel="stylesheet" th:href="@{/css/product.css}">
+
+<link rel="canonical"
+	href="https://getbootstrap.kr/docs/5.2/examples/album/">
+<link href="/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+	crossorigin="anonymous">
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+	crossorigin="anonymous">
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+	crossorigin="anonymous"></script>
+<!-- js -->
+<script>
+	$( document ).ready( function() {
+		$(".product").hover(function(){
+			$(this).find(".direct-cart").removeClass("invisible");
+			$(this).find(".shadow").removeClass("invisible");
+		},function(){
+			$(this).find(".shadow").addClass("invisible");
+			$(this).find(".direct-cart").addClass("invisible");
+		})
+		
+		$(".direct-cart").on("click",function(){
+			console.log("click");
+			var productId = $(this).find(".productId")[0].innerHTML;
+			insertBasket(productId);
+		});
+	});
+	
+	function insertBasket(productId){
+		var product = {
+			memberId : 50,
+			productId : productId,
+			amount : 1
+		}
+		$.ajax({
+			url: "/app/product/productBasket",
+			data: product,
+			type : "post",
+			async: true,
+			success: function(resp){
+				if(resp == "y"){
+					alert("장바구니에 담겼습니다.");
+				}else{
+					alert("로그인이 되지않았거나 이미 장바구니에 담긴 상품입니다. 장바구니 삭제 후 수량을 변경하세요.")
+				}
+			},
+			error: function(e){
+				alert("장바구니에 담는 중에 오류가 발생했습니다.")
+				console.log(e);
+			}
+		})
+	};
+	</script>
+<style>
+.bd-placeholder-img {
+	font-size: 1.125rem;
+	text-anchor: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+@media ( min-width : 768px) {
+	.bd-placeholder-img-lg {
+		font-size: 3.5rem;
+	}
+}
+
+.b-example-divider {
+	height: 3rem;
+	background-color: rgba(0, 0, 0, .1);
+	border: solid rgba(0, 0, 0, .15);
+	border-width: 1px 0;
+	box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em
+		rgba(0, 0, 0, .15);
+}
+
+.b-example-vr {
+	flex-shrink: 0;
+	width: 1.5rem;
+	height: 100vh;
+}
+
+.bi {
+	vertical-align: -.125em;
+	fill: currentColor;
+}
+
+.nav-scroller {
+	position: relative;
+	z-index: 2;
+	height: 2.75rem;
+	overflow-y: hidden;
+}
+
+.nav-scroller .nav {
+	display: flex;
+	flex-wrap: nowrap;
+	padding-bottom: 1rem;
+	margin-top: -1px;
+	overflow-x: auto;
+	text-align: center;
+	white-space: nowrap;
+	-webkit-overflow-scrolling: touch;
+}
+
+.shadow {
+	position: absolute;
+	background: black;
+	width: -webkit-fill-available;
+	height: -webkit-fill-available;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index
+	=
+	2;
+}
+
+.product {z-index = 1;
+	
+}
+
+.invisible {
+	display: none;
+}
+
+.direct-cart {
+	color: white;
+	background-color: rgba(0, 0, 0, 0);
+	text-align: -webkit-center;
+	position: absolute;
+	bottom: 0;
+	width: inherit;
+	padding: 5px;
+	cursor: pointer;
+}
+
+.product-a:link {
+	color: black;
+	text-decoration: none;
+}
+
+.product-a:link {
+	color: black;
+	text-decoration: none;
+}
+</style>
+
+</head>
+
+<div layout:fragment="content">
+	<div class="album py-5 bg-light">
+		<div class="container">
+			<h3 th:if="${pageDTO.productListDtoList.size > 0}"
+				style="margin: 10px">>
+				[[${pageDTO.productListDtoList.get(0).categoryIdKor}]]</h3>
+			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+				<div class="col product"
+					th:each="item : ${pageDTO.productListDtoList}">
+					<div th:id=${item.productId} class="card shadow-sm">
+						<img alt="사진" th:src="${item.imageUrl}" width="100%" height="225">
+						<div class="card-body" style="position: relation;">
+							<div>[[${item.brandNameKor}]]</div>
+							<div>[[${item.nameKor}]]</div>
+							<br> <s><span>$[[${#numbers.formatDecimal(item.originalPrice, 1,'COMMA', 2,
+									'POINT')}]]</span>
+							</s>
+							<div>
+								<span style="color: red">
+									$[[${#numbers.formatDecimal(item.discountPrice,
+									1,'COMMA',2,'POINT')}]]</span> <span th:if="${#locale.language}=='ko'">(₩
+									[[${#numbers.formatInteger(item.discountWon,3,'COMMA')}]])</span>
+							</div>
+						</div>
+						<a class="product-a shadow invisible"
+							th:href="@{productOne(productId=${item.productId})}"> </a>
+						<div id="${item.productId}" class="direct-cart invisible"
+							style="background-color: black; opacity: 1.0; width: -webkit-fill-available;">
+							장바구니 담기
+							<p class="productId invisible" th:value=${item.productId}>[[${item.productId}]]</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+<br>
+		<div  style="text-align: center">
+			<table style="text-align: center; margin:auto;">
+				<tr>
+					<td colspan="10"><th:block
+							th:with="perPage=${pageDTO.perPage}, totalPage=${pageDTO.totalPage}, curPage=${pageDTO.curPage}">
+							<th:block th:each="i : ${#numbers.sequence(1,totalPage)}">
+								<span> <a
+									th:href="@{productList(categoryId=${pageDTO.productListDtoList.get(0).categoryId}, curPage=${i})}">
+									<button type="button" class="btn btn-light">[[${i}]]</button>
+									</a>
+								</span>
+							</th:block>
+						</th:block></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script src="/docs/5.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+	crossorigin="anonymous"></script>
+
+</html>
